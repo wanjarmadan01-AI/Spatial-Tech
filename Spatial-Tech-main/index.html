@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spatial Tech | GIS & Remote Sensing Knowledge Hub</title>
+  <meta name="description"
+    content="Your ultimate resource for GIS & Remote Sensing knowledge, tools, code snippets, and AI-powered Q&A. Learn geospatial technologies with expert guidance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ── AUTH GUARD ── -->
+  <script>
+    (function () {
+      const SESSION_KEY = 'spatialtech_session';
+      const sess = JSON.parse(sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY) || 'null');
+      if (!sess || !sess.id) {
+        window.location.href = 'login.html';
+      } else {
+        // Expose session globally for nav user badge
+        window.__session = sess;
+        // Hide API key controls from non-admin users immediately
+        if (sess.role !== 'admin') {
+          document.addEventListener('DOMContentLoaded', function () {
+            var keyBtn = document.getElementById('apiKeyToggleBtn');
+            var keyPanel = document.getElementById('aiKeyPanel');
+            if (keyBtn)   keyBtn.style.display   = 'none';
+            if (keyPanel) keyPanel.style.display = 'none';
+          });
+        }
+      }
+    })();
+  </script>
+
+  <!-- ── NAV ── -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-brand">
+      <div class="nav-logo">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Satellite dish + signal waves -->
+          <defs>
+            <linearGradient id="lg1" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#39ff85" />
+              <stop offset="1" stop-color="#00c896" />
+            </linearGradient>
+          </defs>
+          <!-- Map pin body -->
+          <path d="M20 4C14.477 4 10 8.477 10 14c0 8 10 22 10 22s10-14 10-22C30 8.477 25.523 4 20 4z" fill="url(#lg1)"
+            opacity="0.85" />
+          <!-- Map pin inner circle -->
+          <circle cx="20" cy="14" r="4.5" fill="#050d0a" />
+          <!-- Signal arcs -->
+          <path d="M30 6 Q35 11 30 16" stroke="#39ff85" stroke-width="1.5" stroke-linecap="round" fill="none"
+            opacity="0.7" />
+          <path d="M32 3 Q40 11 32 19" stroke="#39ff85" stroke-width="1.2" stroke-linecap="round" fill="none"
+            opacity="0.45" />
+          <!-- Satellite dot -->
+          <circle cx="33" cy="6" r="2" fill="#39ff85" opacity="0.9" />
+        </svg>
+      </div>
+      <span class="nav-title">Spatial Tech</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#knowledge" class="nav-link">Knowledge</a></li>
+      <li><a href="#technology" class="nav-link">Technology</a></li>
+      <li><a href="#tools" class="nav-link">Code Tools</a></li>
+      <li><a href="#resources" class="nav-link">Resources</a></li>
+      <li><a href="#chat" class="nav-link nav-cta">Ask AI</a></li>
+        <li id="navUserBadge" style="display:none" class="nav-user-wrap">
+          <div class="nav-user-badge" onclick="toggleUserDropdown()" id="navUserTrigger">
+            <span id="navUserAvatar">👤</span>
+            <span id="navUserName">User</span>
+            <span class="nav-user-chevron" id="navUserChevron">▾</span>
+          </div>
+          <div class="nav-user-dropdown" id="navUserDropdown">
+            <div class="nav-dropdown-info">
+              <span id="navDropdownAvatar">👤</span>
+              <div>
+                <div id="navDropdownName" style="font-weight:700;font-size:0.85rem"></div>
+                <div id="navDropdownRole" style="font-size:0.72rem;opacity:0.65;margin-top:1px"></div>
+              </div>
+            </div>
+            <div class="nav-dropdown-divider"></div>
+            <button class="nav-dropdown-item logout" onclick="logoutUser()">
+              <span>🚪</span> Log Out
+            </button>
+          </div>
+        </li>
+    </ul>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Toggle light/dark mode" title="Toggle light/dark mode">
+      <span class="icon-sun">☀️</span>
+      <span class="icon-moon">🌙</span>
+    </button>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+      <div class="hero-orb orb4"></div>
+      <div class="hero-grid"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        GIS & Remote Sensing Hub
+      </div>
+      <h1 class="hero-title">
+        Explore the World<br />
+        <span class="gradient-text">Through Data & Maps</span>
+      </h1>
+      <p class="hero-desc">
+        Your complete knowledge base for GIS, Remote Sensing, geospatial analysis, satellite imagery, drone data, code
+        tools, and AI-powered answers — all in one place.
+      </p>
+      <div class="hero-actions">
+        <a href="#knowledge" class="btn btn-primary">Start Learning</a>
+        <a href="#chat" class="btn btn-ghost">Ask AI Assistant</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Code Tools</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">200+</span><span class="stat-label">Topics Covered</span></div>
+        <div class="stat-div"></div>
+        <div class="stat"><span class="stat-num">24/7</span><span class="stat-label">AI Support</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="globe-wrap">
+        <img src="gis_hero_banner_1772452515796.png" alt="GIS Satellite and Globe" class="hero-img"
+          onerror="this.style.display='none'" />
+        <div class="globe-rings">
+          <div class="ring ring1"></div>
+          <div class="ring ring2"></div>
+          <div class="ring ring3"></div>
+        </div>
+      </div>
+    </div>
+    <a href="#knowledge" class="scroll-hint" aria-label="Scroll down">
+      <div class="scroll-arrow"></div>
+    </a>
+  </section>
+
+  <!-- ── KNOWLEDGE HUB ── -->
+  <section class="section" id="knowledge">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Knowledge Hub</div>
+        <h2 class="section-title">What is GIS & Remote Sensing?</h2>
+        <p class="section-sub">Understand the foundations and advanced concepts of geospatial science.</p>
+      </div>
+
+      <div class="knowledge-grid">
+        <!-- GIS -->
+        <div class="know-card" data-topic="gis">
+          <div class="know-icon">🗺️</div>
+          <h3>Geographic Information Systems (GIS)</h3>
+          <p>GIS is a framework for gathering, managing, and analyzing data rooted in geography. It integrates many
+            types of data and uses geography as the common thread to visualize, question, analyze, and interpret data to
+            understand relationships, patterns, and trends.</p>
+          <ul class="know-list">
+            <li>Spatial data management & querying</li>
+            <li>Vector & raster data models</li>
+            <li>Coordinate systems & projections</li>
+            <li>Geoprocessing & spatial analysis</li>
+            <li>Map design & cartography</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>Core Components of GIS</h4>
+            <p><strong>Hardware:</strong> Computers, GPS devices, scanners, digitizers, and plotters that enable data
+              collection and output.</p>
+            <p><strong>Software:</strong> ArcGIS, QGIS, GRASS GIS, MapInfo — tools to input, store, query, analyze, and
+              display data.</p>
+            <p><strong>Data:</strong> Spatial data (maps, satellite images) and attribute data (tables, databases)
+              describing the geographic features.</p>
+            <p><strong>Methods:</strong> Overlay analysis, buffer zones, network analysis, terrain modeling,
+              interpolation.</p>
+            <p><strong>People:</strong> GIS specialists, analysts, cartographers, and end users who use the system for
+              decisions.</p>
+            <h4>Applications</h4>
+            <p>Urban planning, transportation routing, disaster management, environmental monitoring, agriculture,
+              public health, defense, and natural resource management.</p>
+          </div>
+        </div>
+
+        <!-- Remote Sensing -->
+        <div class="know-card" data-topic="rs">
+          <div class="know-icon">🛰️</div>
+          <h3>Remote Sensing</h3>
+          <p>Remote sensing is the science of acquiring information about the Earth's surface without physical contact,
+            typically through satellite or aircraft-mounted sensors that detect electromagnetic radiation.</p>
+          <ul class="know-list">
+            <li>Active vs. Passive sensors</li>
+            <li>Electromagnetic spectrum & bands</li>
+            <li>Image preprocessing & corrections</li>
+            <li>Classification & change detection</li>
+            <li>Vegetation, water & land indices</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>Electromagnetic Spectrum in Remote Sensing</h4>
+            <p><strong>Visible (0.4–0.7 µm):</strong> Natural color imagery for land cover mapping and urban analysis.
+            </p>
+            <p><strong>Near-Infrared (0.7–1.3 µm):</strong> Vegetation health, biomass estimation (NDVI applications).
+            </p>
+            <p><strong>SWIR (1.3–3 µm):</strong> Soil moisture, mineral detection, fire mapping.</p>
+            <p><strong>Thermal IR (3–14 µm):</strong> Land surface temperature, urban heat islands, volcanic activity.
+            </p>
+            <p><strong>Microwave (1mm–1m):</strong> Penetrates clouds, used in SAR for surface deformation and flood
+              mapping.</p>
+            <h4>Key Indices</h4>
+            <p>NDVI (vegetation), NDWI (water), NDBI (built-up), EVI (enhanced vegetation), SAVI (soil adjusted), NBR
+              (burn ratio), LST (land surface temperature).</p>
+          </div>
+        </div>
+
+        <!-- Photogrammetry -->
+        <div class="know-card" data-topic="photo">
+          <div class="know-icon">📷</div>
+          <h3>Photogrammetry & Drone Mapping</h3>
+          <p>Photogrammetry uses photographs to measure and interpret geographic features. Modern UAV/drone-based
+            photogrammetry revolutionizes high-resolution 3D terrain modeling.</p>
+          <ul class="know-list">
+            <li>Structure from Motion (SfM)</li>
+            <li>Point cloud processing</li>
+            <li>Digital Elevation Models (DEM/DSM)</li>
+            <li>Orthophoto generation</li>
+            <li>3D mesh & texture mapping</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>Drone Surveying Workflow</h4>
+            <p>1. <strong>Mission Planning:</strong> Define flight area, altitude, overlap (front 80%, side 70%), GSD
+              requirements.</p>
+            <p>2. <strong>Ground Control Points (GCPs):</strong> Establish surveyed reference points for georeferencing
+              accuracy.</p>
+            <p>3. <strong>Data Acquisition:</strong> Execute automated flight with camera triggering at planned
+              intervals.</p>
+            <p>4. <strong>Processing (SfM):</strong> Import images into Agisoft Metashape, Pix4D, or ODM for alignment,
+              dense cloud, mesh, and orthophoto generation.</p>
+            <p>5. <strong>Validation:</strong> Check accuracy against GCPs, export deliverables (GeoTIFF, LAS, DXF).</p>
+          </div>
+        </div>
+
+        <!-- Geospatial Analysis -->
+        <div class="know-card" data-topic="analyze">
+          <div class="know-icon">📊</div>
+          <h3>Geospatial Analysis</h3>
+          <p>Spatial analysis turns raw data into actionable insights using mathematical and statistical methods on
+            geographic features and their relationships.</p>
+          <ul class="know-list">
+            <li>Overlay & proximity analysis</li>
+            <li>Network analysis (routing, service areas)</li>
+            <li>Terrain analysis (slope, aspect, viewshed)</li>
+            <li>Spatial interpolation (IDW, Kriging)</li>
+            <li>Time-series & change analysis</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>Common Analysis Techniques</h4>
+            <p><strong>Buffer Analysis:</strong> Create zones of specified distances around features to assess spatial
+              relationships.</p>
+            <p><strong>Overlay Analysis:</strong> Combine multiple layers (union, intersect, erase) to find spatial
+              coincidences or conflicts.</p>
+            <p><strong>Raster Algebra:</strong> Perform mathematical operations on raster grids — calculating NDVI,
+              slope, or weighted suitability models.</p>
+            <p><strong>Hot Spot Analysis:</strong> Detect statistically significant spatial clusters using Getis-Ord Gi*
+              statistics.</p>
+            <p><strong>Least Cost Path:</strong> Identify optimal routes across terrain considering friction surfaces.
+            </p>
+          </div>
+        </div>
+
+        <!-- Satellite Platforms -->
+        <div class="know-card" data-topic="satellite">
+          <div class="know-icon">🌍</div>
+          <h3>Major Satellite Platforms</h3>
+          <p>Dozens of Earth observation satellites provide multispectral, hyperspectral, SAR, and thermal imagery for
+            diverse geospatial applications.</p>
+          <ul class="know-list">
+            <li>Landsat 8/9 (30m multispectral)</li>
+            <li>Sentinel-1/2/3 (ESA, free access)</li>
+            <li>MODIS (daily global coverage)</li>
+            <li>WorldView, Pleiades (sub-meter)</li>
+            <li>SRTM, ASTER (elevation data)</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>Platform Comparison</h4>
+            <p><strong>Landsat 8/9:</strong> 30m multispectral, 15m pan, 16-day revisit. Best for land cover,
+              agriculture, water body mapping.</p>
+            <p><strong>Sentinel-2:</strong> 10/20/60m multispectral, 5-day revisit, 13 bands. Ideal for vegetation,
+              urban, coastal monitoring.</p>
+            <p><strong>Sentinel-1 SAR:</strong> C-band SAR, cloud penetrating, all-weather. Used for flood mapping,
+              subsidence, crop monitoring.</p>
+            <p><strong>MODIS:</strong> 250m–1km, daily global, 36 bands. Perfect for fire detection, ocean color,
+              climate variables.</p>
+            <p><strong>Commercial (DigitalGlobe/Maxar):</strong> 30cm resolution for precision mapping, infrastructure
+              assessment.</p>
+          </div>
+        </div>
+
+        <!-- Machine Learning in GIS -->
+        <div class="know-card" data-topic="ml">
+          <div class="know-icon">🤖</div>
+          <h3>AI & Machine Learning in GIS</h3>
+          <p>Machine learning and deep learning are transforming geospatial analysis — automating feature extraction,
+            image classification, and predictive modeling at scale.</p>
+          <ul class="know-list">
+            <li>Image segmentation & object detection</li>
+            <li>Land cover classification (RF, SVM, CNN)</li>
+            <li>Change detection with deep learning</li>
+            <li>Predictive spatial modeling</li>
+            <li>Google Earth Engine ML integration</li>
+          </ul>
+          <button class="btn-expand" onclick="toggleExpand(this)">Explore More ↓</button>
+          <div class="expand-content">
+            <h4>ML Approaches for Remote Sensing</h4>
+            <p><strong>Random Forest:</strong> Ensemble classifier widely used for land use/land cover (LULC) mapping.
+              Handles high-dimensional data, resistant to overfitting.</p>
+            <p><strong>Support Vector Machine (SVM):</strong> Effective for hyperspectral image classification and small
+              training datasets.</p>
+            <p><strong>Convolutional Neural Networks (CNN):</strong> Deep learning for object detection (buildings,
+              roads, vehicles) in high-resolution imagery.</p>
+            <p><strong>U-Net:</strong> Semantic segmentation architecture widely used for satellite image segmentation
+              and flood mapping.</p>
+            <p><strong>Transformers:</strong> Vision Transformers (ViT) for large-scale geospatial foundation models
+              (Prithvi, SkySense).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TECHNOLOGY ── -->
+  <section class="section section-dark" id="technology">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Technology Stack</div>
+        <h2 class="section-title">GIS & RS Software Ecosystem</h2>
+        <p class="section-sub">Explore the professional tools, platforms, and languages used in geospatial work.</p>
+      </div>
+      <div class="tech-tabs">
+        <button class="tab-btn active" onclick="switchTab('desktop')">Desktop GIS</button>
+        <button class="tab-btn" onclick="switchTab('cloud')">Cloud Platforms</button>
+        <button class="tab-btn" onclick="switchTab('programming')">Programming</button>
+        <button class="tab-btn" onclick="switchTab('rs-software')">RS Software</button>
+      </div>
+      <div class="tech-content">
+        <div class="tab-pane active" id="tab-desktop">
+          <div class="tech-grid">
+            <div class="tech-card">
+              <div class="tech-logo">🌐</div>
+              <h4>QGIS</h4>
+              <p>Free, open-source desktop GIS with powerful plugins for analysis, editing, and cartography.
+                Cross-platform and community driven.</p>
+              <div class="tech-tags"><span>Free</span><span>Open Source</span><span>Python Plugin</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🗺️</div>
+              <h4>ArcGIS Pro</h4>
+              <p>Industry-leading GIS platform by Esri. Advanced spatial analysis, 3D visualization, model builder, and
+                enterprise integration.</p>
+              <div class="tech-tags"><span>Industry Standard</span><span>3D</span><span>Model Builder</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🌿</div>
+              <h4>GRASS GIS</h4>
+              <p>Powerful open-source raster and vector analysis. Excellent for hydrology, terrain analysis, and
+                scientific research.</p>
+              <div class="tech-tags"><span>Raster</span><span>Hydrology</span><span>Research</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">📍</div>
+              <h4>Global Mapper</h4>
+              <p>Versatile GIS software supporting 300+ formats. Excellent for LiDAR analysis, terrain processing, and
+                data conversion.</p>
+              <div class="tech-tags"><span>LiDAR</span><span>Terrain</span><span>Multi-format</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🔩</div>
+              <h4>SAGA GIS</h4>
+              <p>System for Automated Geoscientific Analyses — specialized in terrain analysis, climate modeling, and
+                geostatistics.</p>
+              <div class="tech-tags"><span>Terrain</span><span>Geostatistics</span><span>Open Source</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">📐</div>
+              <h4>AutoCAD Map 3D</h4>
+              <p>CAD-based mapping solution by Autodesk for engineering and infrastructure GIS workflows.</p>
+              <div class="tech-tags"><span>CAD</span><span>Engineering</span><span>Infrastructure</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="tab-cloud">
+          <div class="tech-grid">
+            <div class="tech-card">
+              <div class="tech-logo">🌎</div>
+              <h4>Google Earth Engine</h4>
+              <p>Planetary-scale geospatial analysis platform with petabytes of satellite imagery. JavaScript & Python
+                API for cloud-based processing.</p>
+              <div class="tech-tags"><span>Cloud</span><span>Petabyte Scale</span><span>Free for Research</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">☁️</div>
+              <h4>ArcGIS Online</h4>
+              <p>Esri's cloud-based GIS platform for creating, sharing, and analyzing geospatial content with web apps
+                and dashboards.</p>
+              <div class="tech-tags"><span>Cloud</span><span>WebGIS</span><span>Dashboard</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🔵</div>
+              <h4>Sentinel Hub</h4>
+              <p>Cloud API for accessing and processing Copernicus/Sentinel satellite data. EO Browser for
+                visualization.</p>
+              <div class="tech-tags"><span>Sentinel</span><span>API</span><span>Custom Scripts</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🐝</div>
+              <h4>OpenEO</h4>
+              <p>Open API for Earth observation cloud backends — process data on multiple backends with a unified
+                interface.</p>
+              <div class="tech-tags"><span>Open API</span><span>Multi-backend</span><span>EO</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🟠</div>
+              <h4>AWS / Azure Geospatial</h4>
+              <p>Cloud computing with geospatial services — S3 for COG storage, SageMaker for ML, STAC catalogs for data
+                discovery.</p>
+              <div class="tech-tags"><span>Cloud Computing</span><span>STAC</span><span>ML</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🟡</div>
+              <h4>Planet Labs</h4>
+              <p>Daily 3m global imagery from a constellation of SmallSats. Education and research access available.</p>
+              <div class="tech-tags"><span>Daily Imagery</span><span>SmallSat</span><span>API</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="tab-programming">
+          <div class="tech-grid">
+            <div class="tech-card">
+              <div class="tech-logo">🐍</div>
+              <h4>Python (GeoPandas, Rasterio)</h4>
+              <p>The go-to language for geospatial scripting. GeoPandas for vector, Rasterio for raster, Shapely for
+                geometry operations.</p>
+              <div class="tech-tags"><span>GeoPandas</span><span>Rasterio</span><span>Shapely</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">📡</div>
+              <h4>JavaScript (Leaflet, MapLibre)</h4>
+              <p>Web mapping libraries for interactive maps. Leaflet for simplicity, MapLibre GL JS for vector tiles and
+                3D terrain.</p>
+              <div class="tech-tags"><span>Leaflet</span><span>MapLibre</span><span>WebGL</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">📊</div>
+              <h4>R (sf, terra, ggplot2)</h4>
+              <p>Statistical computing with powerful spatial packages. sf for vector, terra for raster, tmap for
+                thematic mapping.</p>
+              <div class="tech-tags"><span>sf</span><span>terra</span><span>tmap</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🔶</div>
+              <h4>Google Earth Engine JS/Python API</h4>
+              <p>Access petabytes of geospatial data, perform server-side processing, and deploy web applications using
+                EE API.</p>
+              <div class="tech-tags"><span>ee.Image</span><span>ee.FeatureCollection</span><span>Charts</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">💻</div>
+              <h4>GDAL / OGR</h4>
+              <p>The foundational library for raster (GDAL) and vector (OGR) geospatial data translation and processing.
+                Used by almost all GIS software.</p>
+              <div class="tech-tags"><span>Data Conversion</span><span>Command Line</span><span>Core Library</span>
+              </div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🌐</div>
+              <h4>PostGIS / PostgreSQL</h4>
+              <p>Spatial database extension for PostgreSQL. Industry standard for storing and querying large geospatial
+                datasets.</p>
+              <div class="tech-tags"><span>Spatial DB</span><span>ST_Functions</span><span>Enterprise</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="tab-rs-software">
+          <div class="tech-grid">
+            <div class="tech-card">
+              <div class="tech-logo">🎯</div>
+              <h4>ENVI</h4>
+              <p>Industry-leading remote sensing image analysis software. Hyperspectral analysis, target detection,
+                change detection, and IDL scripting.</p>
+              <div class="tech-tags"><span>Hyperspectral</span><span>IDL</span><span>Classification</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🔍</div>
+              <h4>eCognition</h4>
+              <p>Object-based image analysis (OBIA) software. Segment imagery into meaningful objects for advanced
+                classification workflows.</p>
+              <div class="tech-tags"><span>OBIA</span><span>Segmentation</span><span>Rule-based</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">✈️</div>
+              <h4>Agisoft Metashape</h4>
+              <p>Photogrammetry software for processing drone and aerial photos into 3D models, DEMs, and orthomosaics.
+              </p>
+              <div class="tech-tags"><span>SfM</span><span>Drone</span><span>3D Models</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🌈</div>
+              <h4>SNAP (Sentinel)</h4>
+              <p>ESA's free toolbox for Sentinel satellite data processing — radiometric calibration, interferometry,
+                polarimetry.</p>
+              <div class="tech-tags"><span>Free</span><span>SAR</span><span>InSAR</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🟢</div>
+              <h4>SeaDAS / BEAM VISAT</h4>
+              <p>Tools for ocean color remote sensing — processing MODIS, SeaWiFS, and PACE ocean data.</p>
+              <div class="tech-tags"><span>Ocean Color</span><span>MODIS</span><span>Oceanography</span></div>
+            </div>
+            <div class="tech-card">
+              <div class="tech-logo">🔦</div>
+              <h4>LAStools / CloudCompare</h4>
+              <p>LiDAR and point cloud processing tools. LAStools for high-performance processing, CloudCompare for 3D
+                visualization.</p>
+              <div class="tech-tags"><span>LiDAR</span><span>Point Cloud</span><span>3D Visualization</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CODE TOOLS ── -->
+  <section class="section" id="tools">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Code Tools Library</div>
+        <h2 class="section-title">Ready-to-Use GIS Code Snippets</h2>
+        <p class="section-sub">Copy and run production-ready Python, JavaScript, and GEE scripts to accelerate your
+          workflow.</p>
+      </div>
+      <div class="tools-filter">
+        <button class="filter-btn active" onclick="filterTools('all', this)">All</button>
+        <button class="filter-btn" onclick="filterTools('python', this)">Python</button>
+        <button class="filter-btn" onclick="filterTools('gee', this)">Earth Engine</button>
+        <button class="filter-btn" onclick="filterTools('js', this)">JavaScript</button>
+        <button class="filter-btn" onclick="filterTools('gdal', this)">GDAL/CLI</button>
+        <button class="filter-btn filter-btn-ai" onclick="filterTools('ai-coder', this)" id="aiCoderBtn">🤖 AI Code Assistant</button>
+      </div>
+
+      <!-- ── AI CODE ASSISTANT PANEL ── -->
+      <div class="ai-coder-panel" id="aiCoderPanel" style="display:none;">
+        <div class="ai-coder-header">
+          <div class="ai-coder-title">
+            <div class="ai-coder-icon">🤖</div>
+            <div>
+              <h3>AI Code Assistant</h3>
+              <p>Ask for <strong>any</strong> code — Python scripts, automation tools, GIS workflows, web dev, CLI tools, data pipelines & more</p>
+            </div>
+          </div>
+          <div class="ai-coder-controls">
+            <select class="ai-lang-select" id="aiLangSelect" title="Response language preference">
+              <option value="python">🐍 Python</option>
+              <option value="javascript">🌐 JavaScript</option>
+              <option value="bash">🖥️ Bash/CLI</option>
+              <option value="sql">🗄️ SQL</option>
+              <option value="r">📊 R</option>
+              <option value="any">🔀 Auto-detect</option>
+            </select>
+            <button class="ai-key-btn" onclick="toggleApiKeyPanel()" id="apiKeyToggleBtn" title="Set Groq API Key">🔑 API Key</button>
+            <button class="ai-clear-btn" onclick="clearAiChat()" title="Clear chat">🗑️ Clear</button>
+          </div>
+        </div>
+
+        <!-- API Key Setup Banner -->
+        <div class="ai-key-panel" id="aiKeyPanel">
+          <div class="ai-key-content">
+            <div class="ai-key-info">
+              <span>🔑</span>
+              <div>
+                <strong>Groq API Key Required</strong>
+                <p>This AI uses Groq (Llama 3.3 70B). Get a <strong>free</strong> key at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> — no credit card, instant access, 30 req/min free</p>
+              </div>
+            </div>
+            <div class="ai-key-input-row">
+              <input type="password" id="geminiApiKeyInput" placeholder="Paste your Groq API key here (gsk_...)" autocomplete="off" />
+              <button onclick="saveApiKey()" class="ai-key-save-btn">Save & Start Coding ✓</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="ai-coder-messages" id="aiCoderMessages">
+          <div class="ai-coder-msg bot">
+            <div class="ai-coder-avatar">🤖</div>
+            <div class="ai-coder-bubble">
+              <p>👋 Hi! I'm your <strong>AI Code Assistant</strong> — powered by <strong style="color:#a78bfa">Groq × Llama 3.3 70B</strong>.</p>
+              <p>I can write <strong>any</strong> code for you with full accuracy:</p>
+              <ul>
+                <li>🐍 Python scripts, automation, data processing</li>
+                <li>🛰️ GIS scripts — GDAL, Rasterio, GeoPandas, GEE</li>
+                <li>🌐 Web tools — HTML, CSS, JavaScript, APIs</li>
+                <li>🖥️ CLI tools, Bash scripts, batch automation</li>
+                <li>🗄️ SQL queries, database scripts</li>
+                <li>📊 Data analysis, ML pipelines, visualizations</li>
+                <li>🔧 Any custom tool or workflow you need!</li>
+              </ul>
+              <p id="aiWelcomeKeyHint">💡 <em>Set your free Groq API key above (🔑) then ask me anything!</em></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Prompts -->
+        <div class="ai-quick-prompts" id="aiQuickPrompts">
+          <span class="ai-prompt-label">Try:</span>
+          <button onclick="aiQuickAsk('Write a Python script to batch convert all shapefiles in a folder to GeoJSON')">Batch SHP→GeoJSON</button>
+          <button onclick="aiQuickAsk('Create a Python automation script to calculate NDVI, NDWI and NDBI from a Sentinel-2 image and save all outputs')">Multi-Index Automation</button>
+          <button onclick="aiQuickAsk('Write a GDAL bash script to clip, reproject and compress all TIF files in a folder')">GDAL Batch Pipeline</button>
+          <button onclick="aiQuickAsk('Create a Python script to read a CSV with lat/lon columns and create a shapefile from it')">CSV to Shapefile</button>
+          <button onclick="aiQuickAsk('Write a complete Python web scraper to download satellite data from a public URL list')">Data Downloader</button>
+          <button onclick="aiQuickAsk('Create a Google Earth Engine JavaScript script that exports monthly NDVI composites for a year')">GEE Monthly Export</button>
+        </div>
+
+        <!-- Input Area -->
+        <div class="ai-coder-input-area">
+          <div class="ai-coder-input-wrap">
+            <textarea id="aiCoderInput" class="ai-coder-input" rows="1"
+              placeholder="Ask me to write any code... e.g. 'Write a Python script to automate clipping 50 rasters to a boundary shapefile'"
+              onkeydown="handleAiCoderKey(event)"
+              oninput="autoResizeAiCoder(this)"></textarea>
+            <button class="ai-coder-send" onclick="sendAiCoderMessage()" id="aiCoderSendBtn" title="Send">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+          <p class="ai-coder-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line · Powered by <strong>Groq × Llama 3.3 70B</strong> — Free, fast &amp; unlimited</p>
+          <script>
+            /* Hide key hint for non-admin users */
+            (function(){
+              const _sk = 'spatialtech_session';
+              const _s = JSON.parse(sessionStorage.getItem(_sk)||localStorage.getItem(_sk)||'null');
+              if (_s && _s.role !== 'admin') {
+                var h = document.getElementById('aiWelcomeKeyHint');
+                if (h) h.innerHTML = '✅ <em>AI Code Assistant is ready — just ask me anything!</em>';
+              }
+            })();
+          </script>
+        </div>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid">
+
+        <!-- Tool 1: NDVI -->
+        <div class="tool-card" data-lang="python">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge python">Python</span>
+              <span class="tool-name">Calculate NDVI</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-python">import rasterio
+import numpy as np
+
+def calculate_ndvi(red_path, nir_path, output_path):
+    """Calculate NDVI from Red and NIR bands."""
+    with rasterio.open(red_path) as red_ds:
+        red = red_ds.read(1).astype(float)
+        profile = red_ds.profile
+
+    with rasterio.open(nir_path) as nir_ds:
+        nir = nir_ds.read(1).astype(float)
+
+    # Avoid division by zero
+    np.seterr(divide='ignore', invalid='ignore')
+    ndvi = np.where(
+        (nir + red) == 0,
+        0,
+        (nir - red) / (nir + red)
+    )
+
+    profile.update(dtype=rasterio.float32, count=1, nodata=-9999)
+    with rasterio.open(output_path, 'w', **profile) as dst:
+        dst.write(ndvi.astype(rasterio.float32), 1)
+
+    print(f"NDVI saved to {output_path}")
+    print(f"Min: {ndvi.min():.4f}, Max: {ndvi.max():.4f}")
+    return ndvi
+
+# Usage
+ndvi = calculate_ndvi('red.tif', 'nir.tif', 'ndvi.tif')</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Python · rasterio · numpy</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Calculate NDVI')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 2: Batch Reproject -->
+        <div class="tool-card" data-lang="python">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge python">Python</span>
+              <span class="tool-name">Batch Reproject Rasters</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-python">import os
+import rasterio
+from rasterio.warp import calculate_default_transform, reproject, Resampling
+
+def batch_reproject(input_folder, output_folder, target_crs='EPSG:4326'):
+    """Batch reproject all TIF files in a folder."""
+    os.makedirs(output_folder, exist_ok=True)
+    
+    tif_files = [f for f in os.listdir(input_folder) if f.endswith('.tif')]
+    print(f"Found {len(tif_files)} files to reproject")
+    
+    for fname in tif_files:
+        src_path = os.path.join(input_folder, fname)
+        dst_path = os.path.join(output_folder, f"reproj_{fname}")
+        
+        with rasterio.open(src_path) as src:
+            transform, width, height = calculate_default_transform(
+                src.crs, target_crs, src.width, src.height, *src.bounds
+            )
+            kwargs = src.meta.copy()
+            kwargs.update({'crs': target_crs,
+                           'transform': transform,
+                           'width': width,
+                           'height': height})
+            
+            with rasterio.open(dst_path, 'w', **kwargs) as dst:
+                for i in range(1, src.count + 1):
+                    reproject(
+                        source=rasterio.band(src, i),
+                        destination=rasterio.band(dst, i),
+                        src_transform=src.transform,
+                        src_crs=src.crs,
+                        dst_transform=transform,
+                        dst_crs=target_crs,
+                        resampling=Resampling.bilinear
+                    )
+        print(f"  ✓ {fname} → {target_crs}")
+
+# Usage
+batch_reproject('./input_rasters', './output_wgs84', 'EPSG:4326')</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Python · rasterio · gdalwarp</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Batch Reproject Rasters')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 3: GEE NDVI Time Series -->
+        <div class="tool-card" data-lang="gee">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge gee">Earth Engine</span>
+              <span class="tool-name">NDVI Time Series Chart</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-javascript">// Google Earth Engine — NDVI Time Series
+var roi = ee.Geometry.Point([78.9629, 20.5937]); // India centroid
+
+var s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+  .filterBounds(roi)
+  .filterDate('2023-01-01', '2024-01-01')
+  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+  .map(function(img) {
+    var ndvi = img.normalizedDifference(['B8', 'B4'])
+                  .rename('NDVI');
+    return img.addBands(ndvi)
+              .set('system:time_start', img.get('system:time_start'));
+  });
+
+// Create time series chart
+var chart = ui.Chart.image.series({
+  imageCollection: s2.select('NDVI'),
+  region: roi,
+  reducer: ee.Reducer.mean(),
+  scale: 10,
+  xProperty: 'system:time_start'
+}).setOptions({
+  title: 'NDVI Time Series — Sentinel-2',
+  vAxis: {title: 'NDVI', minValue: -1, maxValue: 1},
+  hAxis: {title: 'Date'},
+  lineWidth: 2,
+  colors: ['#00b300']
+});
+
+print(chart);
+
+// Display latest NDVI
+var latestNDVI = s2.select('NDVI').mosaic();
+Map.centerObject(roi, 8);
+Map.addLayer(latestNDVI, {min: 0, max: 0.8, palette: ['red','yellow','green']}, 'NDVI');</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Google Earth Engine · JavaScript API</span>
+            <button class="ask-btn" onclick="openAskModal(this,'NDVI Time Series Chart (GEE)')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 4: Flood Mapping SAR -->
+        <div class="tool-card" data-lang="gee">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge gee">Earth Engine</span>
+              <span class="tool-name">SAR Flood Mapping</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-javascript">// Sentinel-1 SAR Flood Detection
+var geometry = ee.Geometry.Rectangle([88.0, 24.0, 92.0, 27.0]); // Bangladesh
+
+var before = ee.ImageCollection('COPERNICUS/S1_GRD')
+  .filterBounds(geometry)
+  .filterDate('2024-05-01', '2024-06-01')
+  .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+  .filter(ee.Filter.eq('instrumentMode', 'IW'))
+  .select('VV').mean();
+
+var after = ee.ImageCollection('COPERNICUS/S1_GRD')
+  .filterBounds(geometry)
+  .filterDate('2024-07-01', '2024-08-01')
+  .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VV'))
+  .filter(ee.Filter.eq('instrumentMode', 'IW'))
+  .select('VV').mean();
+
+// Apply speckle filter
+var smoothing = 100;
+var before_s = before.focal_mean(smoothing, 'circle', 'meters');
+var after_s  = after.focal_mean(smoothing, 'circle', 'meters');
+
+// Threshold for flood detection
+var diff = after_s.subtract(before_s);
+var flood = diff.lt(-3); // >3dB decrease = flood
+
+Map.centerObject(geometry, 7);
+Map.addLayer(before_s, {min:-25,max:0}, 'Before (SAR)');
+Map.addLayer(after_s,  {min:-25,max:0}, 'After (SAR)');
+Map.addLayer(flood.updateMask(flood), {palette:['0000FF']}, 'Flood Extent');
+
+var area = flood.multiply(ee.Image.pixelArea())
+               .reduceRegion({reducer:ee.Reducer.sum(), geometry:geometry, scale:10})
+               .get('VV');
+print('Flooded Area (m²):', area);</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Google Earth Engine · Sentinel-1 SAR</span>
+            <button class="ask-btn" onclick="openAskModal(this,'SAR Flood Mapping (GEE)')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 5: Shapefile Dissolve -->
+        <div class="tool-card" data-lang="python">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge python">Python</span>
+              <span class="tool-name">Dissolve & Clip Shapefile</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-python">import geopandas as gpd
+
+def dissolve_by_attribute(input_shp, output_shp, dissolve_field):
+    """Dissolve shapefile by attribute field."""
+    gdf = gpd.read_file(input_shp)
+    print(f"Input: {len(gdf)} features, CRS: {gdf.crs}")
+    
+    dissolved = gdf.dissolve(by=dissolve_field, aggfunc='sum')
+    dissolved = dissolved.reset_index()
+    
+    dissolved.to_file(output_shp)
+    print(f"Output: {len(dissolved)} features saved to {output_shp}")
+    return dissolved
+
+def clip_vector_by_polygon(input_shp, clip_shp, output_shp):
+    """Clip vector layer by polygon boundary."""
+    gdf = gpd.read_file(input_shp)
+    clip = gpd.read_file(clip_shp)
+    
+    # Ensure same CRS
+    if gdf.crs != clip.crs:
+        clip = clip.to_crs(gdf.crs)
+    
+    clipped = gpd.clip(gdf, clip)
+    clipped.to_file(output_shp)
+    print(f"Clipped: {len(clipped)} features retained")
+    return clipped
+
+# Usage
+dissolve_by_attribute('districts.shp', 'states.shp', 'STATE_NAME')
+clip_vector_by_polygon('roads.shp', 'study_area.shp', 'roads_clipped.shp')</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Python · GeoPandas · Shapely</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Dissolve & Clip Shapefile')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 6: Interactive Web Map -->
+        <div class="tool-card" data-lang="js">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge js">JavaScript</span>
+              <span class="tool-name">Interactive Leaflet Map</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-javascript">// Interactive Leaflet Web Map with Layers
+const map = L.map('map').setView([20.5937, 78.9629], 5);
+
+// Basemap layers
+const basemaps = {
+  'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+  'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'),
+  'Terrain': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png')
+};
+basemaps['OpenStreetMap'].addTo(map);
+
+// Add GeoJSON layer from URL
+async function addGeoJSONLayer(url, style, name) {
+  const resp = await fetch(url);
+  const data = await resp.json();
+  const layer = L.geoJSON(data, {
+    style: style,
+    onEachFeature: (feature, layer) => {
+      if (feature.properties) {
+        const popupContent = Object.entries(feature.properties)
+          .map(([k,v]) => `<b>${k}:</b> ${v}`)
+          .join('<br>');
+        layer.bindPopup(popupContent);
+      }
+    }
+  });
+  return layer;
+}
+
+// Layer control
+L.control.layers(basemaps, {}, {collapsed: false}).addTo(map);
+
+// Scale bar and fullscreen
+L.control.scale({metric: true, imperial: false}).addTo(map);
+
+// Click coordinate display
+map.on('click', (e) => {
+  L.popup()
+   .setLatLng(e.latlng)
+   .setContent(`Lat: ${e.latlng.lat.toFixed(5)}<br>Lng: ${e.latlng.lng.toFixed(5)}`)
+   .openOn(map);
+});</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">JavaScript · Leaflet.js · WebMap</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Interactive Leaflet Map')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 7: GDAL CLI -->
+        <div class="tool-card" data-lang="gdal">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge gdal">GDAL/CLI</span>
+              <span class="tool-name">Essential GDAL Commands</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-bash"># ── Raster Operations ──
+
+# Get raster info
+gdalinfo input.tif
+
+# Reproject raster to WGS84
+gdalwarp -t_srs EPSG:4326 input.tif output_wgs84.tif
+
+# Clip raster by shapefile
+gdalwarp -cutline boundary.shp -crop_to_cutline input.tif clipped.tif
+
+# Resample to different resolution (30m → 10m bilinear)
+gdalwarp -tr 10 10 -r bilinear input_30m.tif output_10m.tif
+
+# Convert to Cloud Optimized GeoTIFF
+gdal_translate -of COG -co COMPRESS=LZW input.tif output_cog.tif
+
+# Band stacking (merge multiple bands)
+gdal_merge.py -separate -o stacked.tif red.tif green.tif blue.tif nir.tif
+
+# ── Vector Operations ──
+
+# Convert shapefile to GeoJSON
+ogr2ogr -f GeoJSON output.geojson input.shp
+
+# Reproject vector
+ogr2ogr -t_srs EPSG:32643 output_utm.shp input_wgs84.shp
+
+# Clip vector by bounding box
+ogr2ogr -clipsrc xmin ymin xmax ymax clipped.shp input.shp
+
+# Merge multiple shapefiles
+ogrmerge.py -single -o merged.shp file1.shp file2.shp file3.shp</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">GDAL · OGR · CLI Commands</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Essential GDAL Commands')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 8: Land Use Classification -->
+        <div class="tool-card" data-lang="python">
+          <div class="tool-header">
+            <div class="tool-meta">
+              <span class="lang-badge python">Python</span>
+              <span class="tool-name">Random Forest LULC Classification</span>
+            </div>
+            <button class="copy-btn" onclick="copyCode(this)" title="Copy code">📋</button>
+          </div>
+          <pre class="code-block"><code class="lang-python">import numpy as np
+import rasterio
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+def classify_lulc(image_path, training_csv, output_path):
+    """Random Forest LULC classification from multiband raster."""
+    import pandas as pd
+    
+    # Load multiband image
+    with rasterio.open(image_path) as src:
+        img_data = src.read()  # (bands, rows, cols)
+        profile = src.profile
+        n_bands, n_rows, n_cols = img_data.shape
+    
+    # Reshape: (pixels, bands)
+    X_all = img_data.reshape(n_bands, -1).T
+    
+    # Load training data (columns: B1,B2,...,Bn, Label)
+    df = pd.read_csv(training_csv)
+    X_train = df.drop('Label', axis=1).values
+    y_train = df['Label'].values
+    
+    # Split for validation
+    X_tr, X_val, y_tr, y_val = train_test_split(
+        X_train, y_train, test_size=0.3, random_state=42, stratify=y_train
+    )
+    
+    # Train Random Forest
+    clf = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=42)
+    clf.fit(X_tr, y_tr)
+    
+    # Validate
+    y_pred = clf.predict(X_val)
+    print(classification_report(y_val, y_pred))
+    
+    # Classify full image
+    classified = clf.predict(X_all).reshape(n_rows, n_cols)
+    
+    # Save result
+    profile.update(dtype=rasterio.uint8, count=1, nodata=0)
+    with rasterio.open(output_path, 'w', **profile) as dst:
+        dst.write(classified.astype(rasterio.uint8), 1)
+    
+    print(f"Classification saved: {output_path}")
+    return clf, classified
+
+# Usage
+clf, result = classify_lulc('sentinel2_6band.tif', 'training.csv', 'lulc_output.tif')</code></pre>
+          <div class="tool-footer">
+            <span style="font-size:0.78rem;color:var(--text3)">Python · scikit-learn · RandomForest</span>
+            <button class="ask-btn" onclick="openAskModal(this,'Random Forest LULC Classification')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+              💬 Ask about this code
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RESOURCES ── -->
+  <section class="section section-dark" id="resources">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">Learning Resources</div>
+        <h2 class="section-title">Curated GIS & RS Resources</h2>
+        <p class="section-sub">The best platforms, courses, datasets, and communities to advance your geospatial skills.
+        </p>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-category">
+          <h3><span>📚</span> Online Courses & Tutorials</h3>
+          <ul class="resource-list">
+            <li><a href="https://developers.google.com/earth-engine/tutorials" target="_blank" rel="noopener">Google
+                Earth Engine Tutorials</a> <span class="res-tag">Free</span></li>
+            <li><a href="https://www.esri.com/training/" target="_blank" rel="noopener">Esri Training & MOOC</a> <span
+                class="res-tag">Free+Paid</span></li>
+            <li><a href="https://www.coursera.org/specializations/gis" target="_blank" rel="noopener">UC Davis GIS
+                Specialization (Coursera)</a> <span class="res-tag">Paid</span></li>
+            <li><a href="https://www.qgistutorials.com/" target="_blank" rel="noopener">QGIS Tutorials & Tips</a> <span
+                class="res-tag">Free</span></li>
+            <li><a href="https://www.udemy.com/topic/gis/" target="_blank" rel="noopener">Udemy GIS & Remote Sensing
+                Courses</a> <span class="res-tag">Paid</span></li>
+            <li><a href="https://spatialthoughts.com/" target="_blank" rel="noopener">Spatial Thoughts — Python &
+                GEE</a> <span class="res-tag">Free</span></li>
+          </ul>
+        </div>
+        <div class="resource-category">
+          <h3><span>🛰️</span> Free Satellite Data</h3>
+          <ul class="resource-list">
+            <li><a href="https://earthexplorer.usgs.gov/" target="_blank" rel="noopener">USGS Earth Explorer
+                (Landsat/SRTM)</a> <span class="res-tag">Free</span></li>
+            <li><a href="https://scihub.copernicus.eu/" target="_blank" rel="noopener">Copernicus Open Access Hub
+                (Sentinel)</a> <span class="res-tag">Free</span></li>
+            <li><a href="https://www.earthdata.nasa.gov/" target="_blank" rel="noopener">NASA Earthdata (MODIS,
+                VIIRS)</a> <span class="res-tag">Free</span></li>
+            <li><a href="https://bhuvan.nrsc.gov.in/" target="_blank" rel="noopener">ISRO Bhuvan (India specific)</a>
+              <span class="res-tag">Free</span>
+            </li>
+            <li><a href="https://www.planet.com/education-and-research/" target="_blank" rel="noopener">Planet Labs
+                Education Program</a> <span class="res-tag">Free for Research</span></li>
+            <li><a href="https://registry.opendata.aws/sentinel-2/" target="_blank" rel="noopener">AWS Open Data
+                (Sentinel-2 COG)</a> <span class="res-tag">Free</span></li>
+          </ul>
+        </div>
+        <div class="resource-category">
+          <h3><span>📖</span> Documentation & References</h3>
+          <ul class="resource-list">
+            <li><a href="https://geopandas.org/en/stable/docs.html" target="_blank" rel="noopener">GeoPandas
+                Documentation</a> <span class="res-tag">Docs</span></li>
+            <li><a href="https://rasterio.readthedocs.io/" target="_blank" rel="noopener">Rasterio Documentation</a>
+              <span class="res-tag">Docs</span>
+            </li>
+            <li><a href="https://developers.google.com/earth-engine" target="_blank" rel="noopener">Google Earth Engine
+                API Docs</a> <span class="res-tag">Docs</span></li>
+            <li><a href="https://gdal.org/programs/" target="_blank" rel="noopener">GDAL/OGR Reference</a> <span
+                class="res-tag">Docs</span></li>
+            <li><a href="https://leafletjs.com/reference.html" target="_blank" rel="noopener">Leaflet.js API
+                Reference</a> <span class="res-tag">Docs</span></li>
+            <li><a href="https://postgis.net/docs/" target="_blank" rel="noopener">PostGIS Documentation</a> <span
+                class="res-tag">Docs</span></li>
+          </ul>
+        </div>
+        <div class="resource-category">
+          <h3><span>🤝</span> Communities & Forums</h3>
+          <ul class="resource-list">
+            <li><a href="https://gis.stackexchange.com/" target="_blank" rel="noopener">GIS Stack Exchange</a> <span
+                class="res-tag">Community</span></li>
+            <li><a href="https://www.reddit.com/r/gis/" target="_blank" rel="noopener">Reddit r/GIS</a> <span
+                class="res-tag">Community</span></li>
+            <li><a href="https://groups.google.com/g/google-earth-engine-developers" target="_blank" rel="noopener">GEE
+                Developers Group</a> <span class="res-tag">Community</span></li>
+            <li><a href="https://www.osgeo.org/" target="_blank" rel="noopener">OSGeo (Open Source Geospatial)</a> <span
+                class="res-tag">Organisation</span></li>
+            <li><a href="https://github.com/giswqs" target="_blank" rel="noopener">giswqs GitHub — geemap & more</a>
+              <span class="res-tag">GitHub</span>
+            </li>
+            <li><a href="https://twitter.com/hashtag/GIS" target="_blank" rel="noopener">#GIS on Twitter/X</a> <span
+                class="res-tag">Social</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── AI Q&A CHAT ── -->
+  <section class="section" id="chat">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-tag">AI Assistant</div>
+        <h2 class="section-title">Ask Your GIS & RS Questions</h2>
+        <p class="section-sub">Get instant expert answers on GIS concepts, software, code, satellite data, and remote
+          sensing techniques.</p>
+      </div>
+      <div class="chat-container">
+        <div class="chat-sidebar">
+          <h4>Quick Questions</h4>
+          <div class="quick-questions">
+            <button class="quick-q" onclick="askQuestion('What is the difference between GIS and Remote Sensing?')">What
+              is GIS vs Remote Sensing?</button>
+            <button class="quick-q" onclick="askQuestion('Give me python code to calculate NDVI using rasterio')">💻 NDVI Python
+              Code</button>
+            <button class="quick-q" onclick="askQuestion('Write a GEE script for SAR flood mapping with Sentinel-1')">💻 Flood Mapping
+              GEE Script</button>
+            <button class="quick-q" onclick="askQuestion('Give me a complete LULC random forest classification python code')">💻 LULC Classification
+              Code</button>
+            <button class="quick-q" onclick="askQuestion('Write batch reproject rasterio python script')">💻 Batch
+              Reproject Script</button>
+            <button class="quick-q"
+              onclick="askQuestion('What is the best resolution satellite for urban mapping?')">Best satellite for urban
+              mapping?</button>
+            <button class="quick-q" onclick="askQuestion('How does SAR remote sensing work?')">How does SAR
+              work?</button>
+            <button class="quick-q"
+              onclick="askQuestion('How to do land use land cover classification in Python?')">LULC classification in
+              Python?</button>
+            <button class="quick-q"
+              onclick="askQuestion('What is Google Earth Engine and how can I start using it?')">How to start with
+              GEE?</button>
+            <button class="quick-q" onclick="askQuestion('What is the difference between DEM, DSM, and DTM?')">DEM vs
+              DSM vs DTM?</button>
+            <button class="quick-q" onclick="askQuestion('Give me leaflet HTML web map code')">💻 Leaflet Web
+              Map Code</button>
+            <button class="quick-q"
+              onclick="askQuestion('What machine learning algorithms work best for satellite image classification?')">ML
+              for satellite images?</button>
+          </div>
+        </div>
+        <div class="chat-main">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">
+              <div class="msg-avatar bot-avatar">🛰️</div>
+              <div class="msg-bubble">
+                <p>👋 Hello! I'm <strong>SpatialBot</strong>, your GIS & Remote Sensing AI assistant.</p>
+                <p>I can help you with:</p>
+                <ul>
+                  <li>🗺️ GIS concepts & software questions</li>
+                  <li>🛰️ Remote sensing & satellite imagery</li>
+                  <li>💻 <strong>Full code scripts</strong> — Python, GEE, GDAL, SQL</li>
+                  <li>✈️ Drone mapping & photogrammetry</li>
+                  <li>📊 Spatial analysis techniques</li>
+                </ul>
+                <p>💡 <strong>Ask for code?</strong> Just say <em>"Give me python code for NDVI"</em> or <em>"Write a GEE flood mapping script"</em> — I'll provide the full, ready-to-run script!</p>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <div class="chat-input-wrap">
+              <textarea id="chatInput" class="chat-input" rows="1"
+                placeholder="Ask any GIS or Remote Sensing question..." onkeydown="handleChatKey(event)"
+                oninput="autoResize(this)"></textarea>
+              <button class="chat-send" id="chatSend" onclick="sendMessage()" title="Send">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+            <p class="chat-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <svg viewBox="0 0 40 40" fill="none">
+              <defs>
+                <linearGradient id="lf1" x1="0" y1="0" x2="40" y2="40">
+                  <stop stop-color="#39ff85" />
+                  <stop offset="1" stop-color="#00c896" />
+                </linearGradient>
+              </defs>
+              <!-- Map pin body -->
+              <path d="M20 4C14.477 4 10 8.477 10 14c0 8 10 22 10 22s10-14 10-22C30 8.477 25.523 4 20 4z"
+                fill="url(#lf1)" opacity="0.85" />
+              <!-- Map pin inner circle -->
+              <circle cx="20" cy="14" r="4.5" fill="#071210" />
+              <!-- Signal arcs -->
+              <path d="M30 6 Q35 11 30 16" stroke="#39ff85" stroke-width="1.5" stroke-linecap="round" fill="none"
+                opacity="0.7" />
+              <path d="M32 3 Q40 11 32 19" stroke="#39ff85" stroke-width="1.2" stroke-linecap="round" fill="none"
+                opacity="0.45" />
+              <!-- Satellite dot -->
+              <circle cx="33" cy="6" r="2" fill="#39ff85" opacity="0.9" />
+            </svg>
+            <span>Spatial Tech</span>
+          </div>
+          <p>Your comprehensive GIS & Remote Sensing knowledge hub — from beginner tutorials to advanced code tools.</p>
+        </div>
+        <div class="footer-links">
+          <h5>Sections</h5>
+          <ul>
+            <li><a href="#knowledge">Knowledge Hub</a></li>
+            <li><a href="#technology">Technology Stack</a></li>
+            <li><a href="#tools">Code Tools</a></li>
+            <li><a href="#resources">Resources</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h5>Topics</h5>
+          <ul>
+            <li><a href="#knowledge">GIS Fundamentals</a></li>
+            <li><a href="#knowledge">Remote Sensing</a></li>
+            <li><a href="#knowledge">Drone Mapping</a></li>
+            <li><a href="#knowledge">Machine Learning</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h5>Get Help</h5>
+          <ul>
+            <li><a href="#chat">Ask SpatialBot AI</a></li>
+            <li><a href="#tools">Code Snippets</a></li>
+            <li><a href="#resources">Official Docs</a></li>
+            <li><a href="#resources">Communities</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Spatial Tech · Built for the GIS & Remote Sensing Community</p>
+        <p>Knowledge empowers every pixel 🌍</p>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    title="Back to top">↑</button>
+
+  <!-- ── ASK MODAL ── -->
+  <div class="ask-modal-overlay" id="askModalOverlay" onclick="closeAskOnOverlay(event)">
+    <div class="ask-modal" id="askModal">
+      <div class="ask-modal-header">
+        <div class="ask-modal-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+          Ask about this GIS Code
+        </div>
+        <button class="ask-modal-close" onclick="closeAskModal()" title="Close">✕</button>
+      </div>
+      <div class="ask-modal-context" id="askModalContext">
+        <strong>Code:</strong> <span id="askCodeName">—</span>
+      </div>
+      <div class="ask-modal-messages" id="askMessages">
+        <div class="ask-msg bot-msg">
+          <div class="ask-avatar bot">🤖</div>
+          <div class="ask-bubble">
+            <strong>Hi! I'm SpatialBot.</strong> Ask me anything about this GIS code snippet — how it works, how to
+            modify it, common errors, or how to use it in your project!
+          </div>
+        </div>
+      </div>
+      <div class="ask-quick-chips" id="askChips"></div>
+      <div class="ask-modal-input-area">
+        <textarea class="ask-input" id="askInput" rows="1" placeholder="e.g. How do I change the output CRS?"
+          onkeydown="handleAskKey(event)" oninput="autoResizeAsk(this)"></textarea>
+        <button class="ask-send" onclick="sendAskMessage()" title="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="ai-coder.js"></script>
+</body>
+
+</html>
