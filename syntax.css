@@ -1,7 +1,0 @@
-/* ─── Inline syntax highlighting for code blocks ─── */
-.lang-python .hljs-keyword,
-code .keyword { color: #c792ea; }
-code .string   { color: #c3e88d; }
-code .comment  { color: #546e7a; font-style: italic; }
-code .number   { color: #f78c6c; }
-code .function { color: #82aaff; }
